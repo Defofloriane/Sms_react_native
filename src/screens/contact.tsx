@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Contacts from 'react-native-contacts';
+import {Actions} from 'react-native-router-flux';
 
 // const DATA = [
 //   {
@@ -100,7 +101,8 @@ const contact = ({navigation}) => {
   const Item = ({itemContact}) => (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('message', {contact: itemContact});
+        // navigation.navigate('message', {contact: itemContact});
+        Actions.message({contact: itemContact});
       }}
       style={styles.item}>
       <Image

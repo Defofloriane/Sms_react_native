@@ -5,9 +5,11 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  StatusBar,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import SmsAndroid from 'react-native-get-sms-android';
+import {Actions} from 'react-native-router-flux';
 
 const DATA = [
   {
@@ -27,9 +29,9 @@ const DATA = [
   },
 ];
 
-const messages = ({navigation}) => {
+const messages = ({navigation, contact}) => {
   const [message, setMessage] = useState('');
-  const contact = navigation.getParam('contact');
+  // const contact = navigation.getParam('contact');
   const [allMessage, setAllMessage] = useState([]);
   console.log('====================================');
   console.log(contact);
@@ -56,27 +58,32 @@ const messages = ({navigation}) => {
     );
   };
   const Item = ({showMessage}) => (
-    <TouchableOpacity onPress={() => {}} style={{width: '100%', marginTop: 5}}>
-      <View
-        style={{
-          flex: 1,
-          alignItem: 'center',
-          width: '100%',
-        }}>
-        <Text
-          style={
-            (styles.titre,
-            {
-              borderRadius: 10,
-              padding: 5,
-              alignSelf: showMessage.userId == -1 ? 'flex-end' : 'flex-start',
-              backgroundColor: showMessage.userId == -1 ? 'grey' : 'green',
-            })
-          }>
-          {showMessage.titre}
-        </Text>
-      </View>
-    </TouchableOpacity>
+    <>
+      <StatusBar animated={true} backgroundColor="#009387" />
+      <TouchableOpacity
+        onPress={() => {}}
+        style={{width: '100%', marginTop: 5}}>
+        <View
+          style={{
+            flex: 1,
+            alignItem: 'center',
+            width: '100%',
+          }}>
+          <Text
+            style={
+              (styles.titre,
+              {
+                borderRadius: 10,
+                padding: 5,
+                alignSelf: showMessage.userId == -1 ? 'flex-end' : 'flex-start',
+                backgroundColor: showMessage.userId == -1 ? 'grey' : 'green',
+              })
+            }>
+            {showMessage.titre}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    </>
   );
   const renderItem = ({item}) => <Item showMessage={item} key={item.id} />;
 
