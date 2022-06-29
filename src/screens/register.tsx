@@ -16,8 +16,19 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 import {Actions} from 'react-native-router-flux';
+import Realm from 'realm';
 
 const register = ({navigation}) => {
+  //   const [name, setName] = useState([]);
+
+  // const addName = ()=>{
+  //     let array = name.slice();
+  //     array.push(id : new Realm.BSON.ObjectID(),text : val);
+  //     setName(array);
+  //     console.log(val);
+
+  // }
+
   const [data, setData] = React.useState({
     username: '',
     password: '',
@@ -81,12 +92,12 @@ const register = ({navigation}) => {
         <ScrollView>
           <Text style={styles.text_footer}>Username</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
+            <FontAwesome name="user" color="#05375a" size={20} />
             <TextInput
               placeholder="Your Username"
               style={styles.textInput}
               autoCapitalize="none"
-              // onChangeText={(val) => textInputChange(val)}
+              onChangeText={val => addName()}
             />
 
             <Animatable.View animation="bounceIn">
@@ -137,7 +148,7 @@ const register = ({navigation}) => {
               secureTextEntry={data.confirm_secureTextEntry ? true : false}
               style={styles.textInput}
               autoCapitalize="none"
-              onChangeText={val => handleConfirmPasswordChange(val)}
+              // onChangeText={val => handleConfirmPasswordChange(val)}
             />
             <TouchableOpacity onPress={updateConfirmSecureTextEntry}>
               {data.secureTextEntry ? (

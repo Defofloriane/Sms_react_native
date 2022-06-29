@@ -1,6 +1,7 @@
 import React, {Component, useState, useEffect} from 'react';
 import {useHistory} from 'react-native-dom';
 import TouchID from 'react-native-touch-id';
+import Realm from 'realm';
 import {
   View,
   Text,
@@ -23,11 +24,8 @@ import {Actions} from 'react-native-router-flux';
 import {NavigationContainer} from '@react-navigation/native';
 import register from '../screens/register';
 
-// import {Link} from 'react-router-dom';
-
 const login = ({navigation}) => {
-  // static navigatorSyle =singleScreenApplication;
-
+  //login auth
   const [isAuth, setIsAuth] = useState(false);
 
   const optionalConfigObject = {
@@ -57,7 +55,9 @@ const login = ({navigation}) => {
         TouchID.authenticate('', optionalConfigObject)
           .then(success => {
             console.log('Success', success);
-            setIsAuth(success);
+            setIsAuth(success, Actions.homepage());
+            // setIsAuth();
+
             // navigation.navigate('homepage');
           })
           .catch(err => {

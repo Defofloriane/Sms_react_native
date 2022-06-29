@@ -15,7 +15,7 @@ const Tabss = () => {
     <Tab.Navigator tabBarOptions={{showMessage: false}}>
       <Tab.Screen name="SMS" component={contact} />
       <Tab.Screen name="SMS Wifi" component={tab1} />
-      <Tab.Screen name="SMS Bluethooth" component={tab2} />
+      <Tab.Screen name="SMS Bluetooth" component={tab2} />
     </Tab.Navigator>
   );
 };
