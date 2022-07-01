@@ -17,12 +17,15 @@ import {
 // import { singleScreenApplication } from '../screens/navigationSyle';//add
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from 'react-navigation-stack';
 import {Actions} from 'react-native-router-flux';
 import {NavigationContainer} from '@react-navigation/native';
 import register from '../screens/register';
+// import {Icon} from 'native-base';
+import {Icon} from 'react-native-elements';
 
 const login = ({navigation}) => {
   //login auth
@@ -133,16 +136,16 @@ const login = ({navigation}) => {
         <ScrollView>
           <Text style={styles.text_footer}>Username</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
+            <Icon name="person" size={30} style={{color: 'black'}} />
             <TextInput
               placeholder="Your Username"
               style={styles.textInput}
-              autoCapitalize="none"
               onChangeText={val => textInputChange(val)}
             />
 
             <Animatable.View animation="bounceIn">
-              <Feather name="check-circle" color="green" size={20} />
+              {/* <Feather name="check-circle" color="green" size={20} /> */}
+              <Icon name="check-circle" type="MaterialIcons" size={20} />
             </Animatable.View>
           </View>
 
@@ -156,7 +159,13 @@ const login = ({navigation}) => {
             Password
           </Text>
           <View style={styles.action}>
-            <Feather name="lock" color="#05375a" size={20} />
+            {/* <Feather name="lock-outline" color="#05375a" size={20} /> */}
+            <Icon
+              name="lock"
+              type="MaterialIcons"
+              size={20}
+              style={{color: 'black'}}
+            />
             <TextInput
               placeholder="Your Password"
               secureTextEntry={data.secureTextEntry ? true : false}
@@ -165,11 +174,13 @@ const login = ({navigation}) => {
               // onChangeText={(val) => handlePasswordChange(val)}
             />
             <TouchableOpacity onPress={updateSecureTextEntry}>
-              {data.secureTextEntry ? (
-                <Feather name="eye-off" color="grey" size={20} />
-              ) : (
-                <Feather name="eye" color="grey" size={20} />
-              )}
+              {/* // <Feather name="eye" color="grey" size={20} /> */}
+              <Icon
+                name="remove-red-eye"
+                type="MaterialIcons"
+                size={20}
+                style={{color: 'black'}}
+              />
             </TouchableOpacity>
           </View>
 
@@ -217,7 +228,7 @@ const login = ({navigation}) => {
             <TouchableOpacity
               style={styles.signIn}
               onPress={() => {
-                // Actions.homepage();
+                Actions.homepage();
                 affiche();
               }}>
               <LinearGradient

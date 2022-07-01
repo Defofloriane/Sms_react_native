@@ -6,10 +6,13 @@ import {
   TouchableOpacity,
   FlatList,
   StatusBar,
+  PermissionsAndroid,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import SmsAndroid from 'react-native-get-sms-android';
 import {Actions} from 'react-native-router-flux';
+// import SmsListener from 'react-native-android-sms-listener';
+// import SmsRetriever from 'react-native-sms-retriever';
 
 const DATA = [
   {
@@ -31,11 +34,46 @@ const DATA = [
 
 const messages = ({navigation, contact}) => {
   const [message, setMessage] = useState('');
+  const [messageRecu, setMessageRecu] = useState({
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    titre: 'Test',
+    userId: -1,
+  });
+  PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_SMS, {
+    title: 'Contacts',
+    message: 'This app would like to view your contacts.',
+    buttonPositive: 'Please accept bare mortal',
+  });
   // const contact = navigation.getParam('contact');
   const [allMessage, setAllMessage] = useState([]);
-  console.log('====================================');
-  console.log(contact);
-  console.log('====================================');
+  // console.log('====================================');
+  // console.log(contact);
+  // console.log('====================================');
+
+  // Get the phone number (first gif)
+  const _onPhoneNumberPressed = async () => {
+    try {
+      const phoneNumber = await SmsRetriever.requestPhoneNumber();
+    } catch (error) {
+      console.log(JSON.stringify(error));
+    }
+  };
+
+  // Get the SMS message (second gif)
+  const _onSmsListenerPressed = async () => {
+    try {
+      const registered = await SmsRetriever.startSmsRetriever();
+      if (registered) {
+        SmsRetriever.addSmsListener(event => {
+          console.log(event.message);
+          SmsRetriever.removeSmsListener();
+        });
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error));
+    }
+  };
+
   const sendMess = () => {
     SmsAndroid.autoSend(
       contact.phoneNumber,
@@ -47,16 +85,59 @@ const messages = ({navigation, contact}) => {
         console.log('SMS sent successfully');
         setMessage('');
         setAllMessage([
+          ...allMessage,
           {
-            id: allMessage.length + 1,
+            id: 1,
             titre: message,
             userId: -1,
           },
-          ...allMessage,
         ]);
       },
     );
   };
+  // const getmessage = async () => {
+  //   console.log('message');
+  //   // let subscription = SmsListener.addListener(mess => {
+  //   //   //active observable
+  //   //   console.log(mess, 'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
+  //   //   setMessageRecu(mess);
+  //   // });
+  // };
+  // useEffect(() => {
+  // _onSmsListenerPressed();
+  // getmessage();
+  // let subscription = SmsListener.addListener(mess => {
+  //   //active observable
+  //   console.log(mess, 'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
+  //   setMessageRecu(mess);
+  // });
+  // const registered = SmsRetriever.startSmsRetriever();
+
+  // SmsRetriever.addSmsListener(event => {
+  //   console.log(event.message);
+  //   // SmsRetriever.removeSmsListener();
+  // });
+  // try {
+  //   // if (registered) {
+  //   // }
+  // } catch (error) {
+  //   console.log(JSON.stringify(error));
+  // }
+
+  // return () => subscription.remove();
+  // }, []);
+
+  // useEffect(() => {
+  //   setAllMessage([
+  //     ...allMessage,
+  //     {
+  //       id: allMessage.length + 1,
+  //       titre: messageRecu.body,
+  //       userId: -1,
+  //     },
+  //   ]);
+  // }, [messageRecu]);
+
   const Item = ({showMessage}) => (
     <>
       <StatusBar animated={true} backgroundColor="#009387" />

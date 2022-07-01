@@ -86,18 +86,6 @@ const contact = ({navigation}) => {
     // setSecondData(contactsArr);
   };
 
-  // function filterData(array, value) {
-  //   const filtered = array.filter(contact => {
-  //     if (contact?.displayName !== null) {
-  //       return contact?.displayName
-  //         ?.toString()
-  //         .toLowerCase()
-  //         .includes(value.toLowerCase());
-  //     }
-  //   });
-  // setData(filtered);
-  // }
-
   const Item = ({itemContact}) => (
     <TouchableOpacity
       onPress={() => {

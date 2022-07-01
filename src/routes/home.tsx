@@ -9,7 +9,7 @@ import message from '../screens/messages';
 import register from '../screens/register';
 import homepage from '../screens/homepage';
 import HederPage from './header';
-
+import Smsheader from './smsheader';
 const home = () => {
   return (
     <Router>
@@ -21,7 +21,7 @@ const home = () => {
           title="register"
           hideNavBar
         />
-        <Scene key="homepage" component={homepage} hideNavBar />
+        <Scene key="homepage" component={homepage} navBar={Smsheader} />
         <Scene key="message" component={message} navBar={HederPage} />
       </Stack>
     </Router>

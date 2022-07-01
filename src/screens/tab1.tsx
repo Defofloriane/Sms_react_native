@@ -1,137 +1,172 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {
+  DeviceEventEmitter,
+  NativeModules,
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+  Platform,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
+import React from 'react';
+import {Actions} from 'react-native-router-flux';
+import {getError} from './reason-code';
+const tab1 = () => {
+  const WiFiP2PManager = NativeModules.WiFiP2PManagerModule;
 
-import NetInfo from '@react-native-community/netinfo';
+  // ACTIONS
+  const PEERS_UPDATED_ACTION = 'PEERS_UPDATED';
+  const CONNECTION_INFO_UPDATED_ACTION = 'CONNECTION_INFO_UPDATED';
+  const THIS_DEVICE_CHANGED_ACTION = 'THIS_DEVICE_CHANGED_ACTION';
 
-class tab1 extends Component {
-  NetInfoSubscribtion = null;
+  // CONSTS
+  const MODULE_NAME = 'WIFI_P2P';
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      connection_status: false,
-      connection_type: null,
-      connection_net_reachable: false,
-      connection_wifi_enabled: false,
-      connection_details: null,
-    };
-  }
+  const initialize = () => WiFiP2PManager.init();
 
-  componentDidMount() {
-    this.NetInfoSubscribtion = NetInfo.addEventListener(
-      this._handleConnectivityChange,
-    );
-  }
-
-  componentWillUnmount() {
-    this.NetInfoSubscribtion && this.NetInfoSubscribtion();
-  }
-
-  _handleConnectivityChange = state => {
-    this.setState({
-      connection_status: state.isConnected,
-      connection_type: state.type,
-      connection_net_reachable: state.isInternetReachable,
-      connection_wifi_enabled: state.isWifiEnabled,
-      connection_details: state.details,
+  const startDiscoveringPeers = () =>
+    new Promise((resolve, reject) => {
+      WiFiP2PManager.discoverPeers(reasonCode => {
+        reasonCode === undefined
+          ? resolve('success')
+          : reject(getError(reasonCode));
+      });
     });
+
+  const subscribeOnEvent = (event, callback) => {
+    DeviceEventEmitter.addListener(`${MODULE_NAME}:${event}`, callback);
   };
 
-  render() {
-    return (
-      <View style={styles.body}>
-        <Text style={styles.buttonText}>
-          Connection Status :{' '}
-          {this.state.connection_status ? 'Connected' : 'Disconnected'}
-        </Text>
-        <Text style={styles.buttonText}>
-          Connection Type : {this.state.connection_type}
-        </Text>
-        <Text style={styles.buttonText}>
-          Internet Reachable :{' '}
-          {this.state.connection_net_reachable ? 'YES' : 'NO'}
-        </Text>
-        <Text style={styles.buttonText}>
-          Wifi Enabled : {this.state.connection_wifi_enabled ? 'YES' : 'NO'}
-        </Text>
-        <Text style={styles.buttonText}>
-          Connection Details : {'\n'}
-          {this.state.connection_type == 'wifi'
-            ? (this.state.connection_details.isConnectionExpensive
-                ? 'Connection Expensive: YES'
-                : 'Connection Expensive: NO') +
-              '\n' +
-              'ssid: ' +
-              this.state.connection_details.ssid +
-              '\n' +
-              'bssid: ' +
-              this.state.connection_details.bssid +
-              '\n' +
-              'strength: ' +
-              this.state.connection_details.strength +
-              '\n' +
-              'ipAddress: ' +
-              this.state.connection_details.ipAddress +
-              '\n' +
-              'subnet: ' +
-              this.state.connection_details.subnet +
-              '\n' +
-              'frequency: ' +
-              this.state.connection_details.frequency
-            : this.state.connection_type == 'cellular'
-            ? (this.state.connection_details.isConnectionExpensive
-                ? 'Connection Expensive: YES'
-                : 'Connection Expensive: NO') +
-              '\n' +
-              'cellularGeneration: ' +
-              this.state.connection_details.cellularGeneration +
-              '\n' +
-              'carrier: ' +
-              this.state.connection_details.carrier
-            : '---'}
-        </Text>
-      </View>
-    );
-  }
-}
+  const unsubscribeFromEvent = (event, callback) => {
+    DeviceEventEmitter.removeListener(`${MODULE_NAME}:${event}`, callback);
+  };
 
-const styles = StyleSheet.create({
-  body: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-    backgroundColor: '#2193b0',
-  },
-  buttonText: {
-    fontSize: 18,
-    textAlign: 'center',
-    margin: 10,
-    color: '#ffffff',
-  },
-});
+  const subscribeOnThisDeviceChanged = callback =>
+    subscribeOnEvent(THIS_DEVICE_CHANGED_ACTION, callback);
+
+  const unsubscribeFromThisDeviceChanged = callback =>
+    unsubscribeFromEvent(THIS_DEVICE_CHANGED_ACTION, callback);
+
+  const subscribeOnPeersUpdates = callback =>
+    subscribeOnEvent(PEERS_UPDATED_ACTION, callback);
+
+  const unsubscribeFromPeersUpdates = callback =>
+    unsubscribeFromEvent(PEERS_UPDATED_ACTION, callback);
+
+  const subscribeOnConnectionInfoUpdates = callback =>
+    subscribeOnEvent(CONNECTION_INFO_UPDATED_ACTION, callback);
+
+  const unsubscribeFromConnectionInfoUpdates = callback =>
+    unsubscribeFromEvent(CONNECTION_INFO_UPDATED_ACTION, callback);
+
+  const connect = deviceAddress => connectWithConfig({deviceAddress});
+
+  const connectWithConfig = args =>
+    new Promise((resolve, reject) => {
+      WiFiP2PManager.connectWithConfig(args, status => {
+        status === undefined ? resolve() : reject(getError(status));
+      });
+    });
+
+  const cancelConnect = () =>
+    new Promise((resolve, reject) => {
+      WiFiP2PManager.cancelConnect(status => {
+        status === undefined ? resolve() : reject(getError(status));
+      });
+    });
+
+  const createGroup = () =>
+    new Promise((resolve, reject) => {
+      WiFiP2PManager.createGroup(reasonCode => {
+        reasonCode === undefined ? resolve() : reject(getError(reasonCode));
+      });
+    });
+
+  const removeGroup = () =>
+    new Promise((resolve, reject) => {
+      WiFiP2PManager.removeGroup(reasonCode => {
+        reasonCode === undefined ? resolve() : reject(getError(reasonCode));
+      });
+    });
+
+  const getAvailablePeers = () => WiFiP2PManager.getAvailablePeersList();
+
+  const stopDiscoveringPeers = () =>
+    new Promise((resolve, reject) => {
+      WiFiP2PManager.stopPeerDiscovery(reasonCode => {
+        reasonCode === undefined ? resolve() : reject(getError(reasonCode));
+      });
+    });
+
+  const sendFile = pathToFile => WiFiP2PManager.sendFile(pathToFile);
+
+  const receiveFile = (folder, fileName, forceToScanGallery = false) =>
+    new Promise((resolve, reject) => {
+      WiFiP2PManager.receiveFile(
+        folder,
+        fileName,
+        forceToScanGallery,
+        pathToFile => {
+          resolve(pathToFile);
+        },
+      );
+    });
+
+  const sendMessage = message => WiFiP2PManager.sendMessage(message);
+
+  const receiveMessage = () =>
+    new Promise((resolve, reject) => {
+      WiFiP2PManager.receiveMessage(message => {
+        resolve(message);
+      });
+    });
+
+  const getConnectionInfo = () => WiFiP2PManager.getConnectionInfo();
+
+  const getGroupInfo = () => WiFiP2PManager.getGroupInfo();
+
+  return (
+    <View>
+      <Text>tab1</Text>
+    </View>
+  );
+};
+// export {
+//   // public methods
+
+//   startDiscoveringPeers,
+//   stopDiscoveringPeers,
+//   subscribeOnThisDeviceChanged,
+//   unsubscribeFromThisDeviceChanged,
+//   subscribeOnPeersUpdates,
+//   unsubscribeFromPeersUpdates,
+//   subscribeOnConnectionInfoUpdates,
+//   unsubscribeFromConnectionInfoUpdates,
+//   getAvailablePeers,
+//   connect,
+//   connectWithConfig,
+//   cancelConnect,
+//   createGroup,
+//   removeGroup,
+//   getConnectionInfo,
+//   getGroupInfo,
+//   sendFile,
+//   receiveFile,
+//   sendMessage,
+//   receiveMessage,
+
+//   // system methods
+//   subscribeOnEvent,
+//   unsubscribeFromEvent,
+
+//   // const
+//   PEERS_UPDATED_ACTION,
+//   CONNECTION_INFO_UPDATED_ACTION,
+//   THIS_DEVICE_CHANGED_ACTION,
+// };
 
 export default tab1;
-
-// import React from 'react';
-// import {
-//   View,
-//   Text,
-//   Button,
-//   TouchableOpacity,
-//   Dimensions,
-//   TextInput,
-//   Platform,
-//   StyleSheet,
-//   ScrollView,
-//   StatusBar,
-// } from 'react-native';
-// import {Actions} from 'react-native-router-flux';
-
-// const tab1 = () => {
-//   return (
-//     <View>
-//       <Text>tab1</Text>
-//     </View>
-//   );
-// };
-// export default tab1;

@@ -18,6 +18,7 @@ import * as Animatable from 'react-native-animatable';
 import {Actions} from 'react-native-router-flux';
 import Realm from 'realm';
 import User from './user';
+import {Icon} from 'react-native-elements';
 
 const register = ({navigation}) => {
   //   const [name, setName] = useState([]);
@@ -146,7 +147,9 @@ const register = ({navigation}) => {
         <ScrollView>
           <Text style={styles.text_footer}>Username</Text>
           <View style={styles.action}>
-            <FontAwesome name="user" color="#05375a" size={20} />
+            {/* <FontAwesome name="user" color="#05375a" size={20} />
+             */}
+            <Icon name="person" size={30} style={{color: 'black'}} />
             <TextInput
               placeholder="Your Username"
               style={styles.textInput}
@@ -155,10 +158,6 @@ const register = ({navigation}) => {
               // onChangeText={val => textInputChange(val)}
               onChangeText={name => setname(name)}
             />
-
-            <Animatable.View animation="bounceIn">
-              <Feather name="check-circle" color="green" size={20} />
-            </Animatable.View>
           </View>
 
           <Text
@@ -171,7 +170,13 @@ const register = ({navigation}) => {
             Phone Number
           </Text>
           <View style={styles.action}>
-            <Feather name="lock" color="#05375a" size={20} />
+            {/* <Feather name="lock" color="#05375a" size={20} /> */}
+            <Icon
+              name="local-phone"
+              type="MaterialIcons"
+              size={20}
+              style={{color: 'black'}}
+            />
             <TextInput
               value={state}
               placeholder="Your Number"
@@ -200,7 +205,13 @@ const register = ({navigation}) => {
             Password
           </Text>
           <View style={styles.action}>
-            <Feather name="lock" color="#05375a" size={20} />
+            {/* <Feather name="lock" color="#05375a" size={20} /> */}
+            <Icon
+              name="lock"
+              type="MaterialIcons"
+              size={20}
+              style={{color: 'black'}}
+            />
             <TextInput
               placeholder="enter  Your Password"
               secureTextEntry={data.confirm_secureTextEntry ? true : false}
@@ -209,13 +220,6 @@ const register = ({navigation}) => {
               // onChangeText={val => handleConfirmPasswordChange(val)}
               onChangeText={text => setpassword(text)}
             />
-            <TouchableOpacity onPress={updateConfirmSecureTextEntry}>
-              {data.secureTextEntry ? (
-                <Feather name="eye-off" color="grey" size={20} />
-              ) : (
-                <Feather name="eye" color="grey" size={20} />
-              )}
-            </TouchableOpacity>
           </View>
           <View style={styles.textPrivate}>
             <Text style={styles.color_textPrivate}>
