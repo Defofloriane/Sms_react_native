@@ -11,7 +11,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import SmsAndroid from 'react-native-get-sms-android';
 import {Actions} from 'react-native-router-flux';
-// import SmsListener from 'react-native-android-sms-listener';
+import SmsListener from 'react-native-android-sms-listener';
 // import SmsRetriever from 'react-native-sms-retriever';
 
 const DATA = [
@@ -95,6 +95,39 @@ const messages = ({navigation, contact}) => {
       },
     );
   };
+  //addd
+  const [messages, setMessages] = useState([]);
+
+  const getRecuMessages = async () => {
+    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECEIVE_SMS, {
+      title: 'Receive SMS',
+      message: 'This app would like to view your contacts.',
+      buttonPositive: 'Please accept bare mortal',
+    });
+
+    SmsListener.addListener(message => {
+      console.log(message);
+      setAllMessage(previous => [
+        ...previous,
+        {
+          id: new Date().getTime(),
+          titre: message?.body,
+          userId: 1,
+        },
+      ]);
+      // setAllMessage([
+      //   ...allMessage,
+      //   {
+      //     id: new Date().getTime(),
+      //     titre: message?.body,
+      //     userId: 1,
+      //   },
+      // ]);
+    });
+  };
+  useEffect(() => {
+    getRecuMessages();
+  }, []);
   // const getmessage = async () => {
   //   console.log('message');
   //   // let subscription = SmsListener.addListener(mess => {
@@ -141,14 +174,13 @@ const messages = ({navigation, contact}) => {
   const Item = ({showMessage}) => (
     <>
       <StatusBar animated={true} backgroundColor="#009387" />
-      <TouchableOpacity
-        onPress={() => {}}
-        style={{width: '100%', marginTop: 5}}>
+      <TouchableOpacity onPress={() => {}} style={{width: '98%', marginTop: 5}}>
         <View
           style={{
             flex: 1,
             alignItem: 'center',
-            width: '100%',
+            width: '98%',
+            marginHorizontal: 10,
           }}>
           <Text
             style={
@@ -167,12 +199,12 @@ const messages = ({navigation, contact}) => {
     </>
   );
   const renderItem = ({item}) => <Item showMessage={item} key={item.id} />;
-
   return (
     <View style={{flex: 1}}>
-      <View style={{flex: 0.9}}>
+      <View>
         <FlatList
           data={allMessage}
+          style={{paddingHorizontal: 20}}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
@@ -180,11 +212,12 @@ const messages = ({navigation, contact}) => {
 
       <View
         style={{
-          flex: 0.1,
           flexDirection: 'row',
           paddingHorizontal: 15,
           justifyContent: 'space-between',
           paddingBottom: 20,
+          position: 'absolute',
+          bottom: 1,
         }}>
         <TextInput
           onChangeText={val => {
@@ -198,6 +231,7 @@ const messages = ({navigation, contact}) => {
             backgroundColor: 'gray',
             borderRadius: 40,
             textAlign: 'center',
+            marginHorizontal: 10,
           }}
         />
         <TouchableOpacity

@@ -265,7 +265,6 @@ android {
 }
 
 dependencies {
-    // compile project(':react-native-android-sms-listener')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
 

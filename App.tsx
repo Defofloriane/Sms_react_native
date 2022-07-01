@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 
 import {View, PermissionsAndroid} from 'react-native';
@@ -9,6 +9,8 @@ import Navigator from './src/routes/home';
 
 import login from './src/screens/login';
 import {NativeBaseProvider, Text, Box} from 'native-base';
+import SmsListener from 'react-native-android-sms-listener';
+
 // import SmsRetriever from 'react-native-sms-retriever';
 // import SmsListener from 'react-native-android-sms-listener';
 // import Tabs from '../navigation/tabs';
@@ -25,6 +27,50 @@ import {NativeBaseProvider, Text, Box} from 'native-base';
 // }
 
 const App = () => {
+  // SmsListener.addListener(message => {
+  //   console.info(message);
+  // });
+
+  // async function requestReadSmsPermission() {
+  //   try {
+  //     await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.READ_SMS,
+  //       {
+  //         title: 'request',
+  //         message: "Why you're asking for...",
+  //       },
+  //     );
+  //   } catch (err) {}
+  // }
+
+  // const recuMessage = () => {
+  //   let subscription = SmsListener.addListener(message => {
+  //     let verificationCodeRegex = /Your verification code: ([\d]{6})/;
+
+  //     if (verificationCodeRegex.test(message.body)) {
+  //       let verificationCode = message.body.match(verificationCodeRegex)[1];
+
+  //       YourPhoneVerificationApi.verifyPhoneNumber(
+  //         message.originatingAddress,
+  //         verificationCode,
+  //       ).then(verifiedSuccessfully => {
+  //         if (verifiedSuccessfully) {
+  //           subscription.remove();
+  //           return;
+  //         }
+
+  //         if (__DEV__) {
+  //           console.info(
+  //             'Failed to verify phone `%s` using code `%s`',
+  //             message.originatingAddress,
+  //             verificationCode,
+  //           );
+  //         }
+  //       });
+  //     }
+  //   });
+  // };
+
   // const _onSmsListenerPressed = async () => {
   //   try {
   //     const phoneNumber = await SmsRetriever.requestPhoneNumber();
@@ -61,7 +107,27 @@ const App = () => {
   //       <Route exact path="/Tabs" component={Tabs} />
   //     </Switch>
   //   </Router>
-  // );
+  // // );
+  // const [messages, setMessages] = useState([]);
+
+  // const getRecuMessages = async () => {
+  //   SmsListener.addListener(message => {
+  //     console.log('fgggggg');
+
+  //     setMessages([
+  //       ...messages,
+  //       {
+  //         id: allMessage.length + 1,
+  //         titre: messageRecu.body,
+  //         userId: -1,
+  //       },
+  //     ]);
+  //   });
+  // };
+  // useEffect(() => {
+  //   getRecuMessages();
+  // }, []);
+
   return (
     <NativeBaseProvider>
       <Navigator />
