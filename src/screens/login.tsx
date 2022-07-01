@@ -120,6 +120,9 @@ const login = ({navigation}) => {
     });
   };
 
+  const affiche = () => {
+    console.log(data.username);
+  };
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#009387" barStyle="light-content" />
@@ -135,7 +138,7 @@ const login = ({navigation}) => {
               placeholder="Your Username"
               style={styles.textInput}
               autoCapitalize="none"
-              // onChangeText={(val) => textInputChange(val)}
+              onChangeText={val => textInputChange(val)}
             />
 
             <Animatable.View animation="bounceIn">
@@ -214,7 +217,8 @@ const login = ({navigation}) => {
             <TouchableOpacity
               style={styles.signIn}
               onPress={() => {
-                Actions.homepage();
+                // Actions.homepage();
+                affiche();
               }}>
               <LinearGradient
                 colors={['#08d4c4', '#01ab9d']}

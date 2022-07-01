@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -17,26 +17,94 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 import {Actions} from 'react-native-router-flux';
 import Realm from 'realm';
+import User from './user';
 
 const register = ({navigation}) => {
   //   const [name, setName] = useState([]);
 
   // const addName = ()=>{
   //     let array = name.slice();
-  //     array.push(id : new Realm.BSON.ObjectID(),text : val);
+  //     // array.push(id : new Realm.BSON.ObjectID(),text : val);
   //     setName(array);
   //     console.log(val);
 
   // }
-
+  //register user
   const [data, setData] = React.useState({
     username: '',
     password: '',
-    confirm_password: '',
+    phonenumber: '',
+    // phonenumber: '',
     check_textInputChange: false,
     secureTextEntry: true,
     confirm_secureTextEntry: true,
   });
+
+  const [state, setstate] = useState('');
+  const [name, setname] = useState('');
+  const [password, setpassword] = useState('');
+
+  const Users2 = {
+    name: 'Register',
+    properties: {
+      _phonenumber: 'string',
+      Name: 'string',
+      Password: 'string',
+    },
+    primaryKey: '_phonenumber',
+  };
+
+  const saveUser = (state: string, name: string, password: string) => {
+    (async () => {
+      const realm = await Realm.open({
+        path: 'myrealm',
+        schema: [Users2],
+      });
+
+      // task1 = realm.create('Register', new User(4, 'floriane'));
+      let task1;
+      realm.write(() => {
+        task1 = realm.create('Register', {
+          _phonenumber: state,
+          Name: name,
+          // phone: data.phonenumber,
+          Password: password,
+        });
+      });
+
+      // // let task1, task2;
+      // realm.write(() => {
+      //   task1 = realm.create('Task', {
+      //     _id: 1,
+      //     name: 'go grocery shopping',
+      //     status: 'Open',
+      //   }
+      //   task2 = realm.create('Task', {
+      //     _id: 2,
+      //     name: 'go exercise',
+      //     status: 'Open',
+      //   });
+      //   console.log(`created two tasks: ${task1.name} & ${task2.name}`);
+      // });
+      const tasks = realm.objects('Register');
+      console.log(`The lists of tasks are: ${JSON.stringify(tasks)}`);
+    })();
+    // navigation.navigate('login');
+  };
+
+  const updateSecureTextEntry = () => {
+    setData({
+      ...data,
+      secureTextEntry: !data.secureTextEntry,
+    });
+  };
+
+  const updateConfirmSecureTextEntry = () => {
+    setData({
+      ...data,
+      confirm_secureTextEntry: !data.confirm_secureTextEntry,
+    });
+  };
 
   const textInputChange = val => {
     if (val.length !== 0) {
@@ -64,21 +132,7 @@ const register = ({navigation}) => {
   const handleConfirmPasswordChange = val => {
     setData({
       ...data,
-      confirm_password: val,
-    });
-  };
-
-  const updateSecureTextEntry = () => {
-    setData({
-      ...data,
-      secureTextEntry: !data.secureTextEntry,
-    });
-  };
-
-  const updateConfirmSecureTextEntry = () => {
-    setData({
-      ...data,
-      confirm_secureTextEntry: !data.confirm_secureTextEntry,
+      phonenumber: val,
     });
   };
 
@@ -97,7 +151,9 @@ const register = ({navigation}) => {
               placeholder="Your Username"
               style={styles.textInput}
               autoCapitalize="none"
-              onChangeText={val => addName()}
+              //  onChangeText={val => addName()}
+              // onChangeText={val => textInputChange(val)}
+              onChangeText={name => setname(name)}
             />
 
             <Animatable.View animation="bounceIn">
@@ -112,24 +168,26 @@ const register = ({navigation}) => {
                 marginTop: 35,
               },
             ]}>
-            Password
+            Phone Number
           </Text>
           <View style={styles.action}>
             <Feather name="lock" color="#05375a" size={20} />
             <TextInput
-              placeholder="Your Password"
-              secureTextEntry={data.secureTextEntry ? true : false}
+              value={state}
+              placeholder="Your Number"
+              // secureTextEntry={data.secureTextEntry ? true : false}
               style={styles.textInput}
               autoCapitalize="none"
-              // onChangeText={(val) => handlePasswordChange(val)}
+              // onChangeText={val => handleConfirmPasswordChange(val)}
+              onChangeText={text => setstate(text)}
             />
-            <TouchableOpacity onPress={updateSecureTextEntry}>
+            {/* <TouchableOpacity onPress={updateSecureTextEntry}>
               {data.secureTextEntry ? (
                 <Feather name="eye-off" color="grey" size={20} />
               ) : (
                 <Feather name="eye" color="grey" size={20} />
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           <Text
@@ -139,16 +197,17 @@ const register = ({navigation}) => {
                 marginTop: 35,
               },
             ]}>
-            Confirm Password
+            Password
           </Text>
           <View style={styles.action}>
             <Feather name="lock" color="#05375a" size={20} />
             <TextInput
-              placeholder="Confirm Your Password"
+              placeholder="enter  Your Password"
               secureTextEntry={data.confirm_secureTextEntry ? true : false}
               style={styles.textInput}
               autoCapitalize="none"
               // onChangeText={val => handleConfirmPasswordChange(val)}
+              onChangeText={text => setpassword(text)}
             />
             <TouchableOpacity onPress={updateConfirmSecureTextEntry}>
               {data.secureTextEntry ? (
@@ -175,7 +234,10 @@ const register = ({navigation}) => {
           <View style={styles.button}>
             <TouchableOpacity
               style={styles.signIn}
-              onPress={() => navigation.navigate('login')}>
+              onPress={
+                // saveUser(state, name, password)
+                console.log('gggcgc')
+              }>
               <LinearGradient
                 colors={['#08d4c4', '#01ab9d']}
                 style={styles.signIn}>
